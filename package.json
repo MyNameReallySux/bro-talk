@@ -1,0 +1,20 @@
+{
+  "name": "bro-talk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MyNameReallySux/bro-talk.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MyNameReallySux/bro-talk/issues"
+  },
+  "homepage": "https://github.com/MyNameReallySux/bro-talk#readme"
+}
