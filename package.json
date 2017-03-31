@@ -1,27 +1,33 @@
 {
-  "name": "bro-talk",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MyNameReallySux/bro-talk.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MyNameReallySux/bro-talk/issues"
-  },
-  "homepage": "https://github.com/MyNameReallySux/bro-talk#readme",
-  "dependencies": {
-    "body-parser": "^1.17.1",
-    "compression": "^1.6.2",
-    "express": "^4.15.2",
-    "memory-cache": "^0.1.6",
-    "mongoose": "^4.9.1"
-  }
+	"name": "bro-talk",
+	"version": "1.0.0",
+	"description": "",
+	"main": "app.js",
+	"scripts": {
+		"start": "nodemon app",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/MyNameReallySux/bro-talk.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/MyNameReallySux/bro-talk/issues"
+	},
+	"homepage": "https://github.com/MyNameReallySux/bro-talk#readme",
+	"dependencies": {
+		"body-parser": "^1.17.1",
+		"compression": "^1.6.2",
+		"cookie-parser": "^1.4.3",
+		"express": "^4.15.2",
+		"memory-cache": "^0.1.6",
+		"mongoose": "^4.9.1",
+		"mongoose-auto-increment": "^5.0.1",
+		"mongoose-html": "0.0.1",
+		"mongoose-simpledb": "^5.1.0",
+		"morgan": "^1.8.1"
+	}
 }
