@@ -1,4 +1,3 @@
-const router = require("express").Router()
 const db = require("mongoose-simpledb").db
 
 var counter = 1;
@@ -73,15 +72,12 @@ function nextKey(code_name, onError, onNextKey){
 	})
 }
 
-module.exports.init = function(context, onFinished){
-	var modules = context.modules || {}
-	const Page = db.Page
-
+module.exports.router = function(router, context, modules){
 	router.get('/:page(\\d+)?', modules.mcache(5), (req, res, next)=>{	
 		var page = req.params.page - 1 || 0
 		var page_size = 10
 		var skip = page * page_size
-		Page.find({}, null, {
+		db.Page.find({}, null, {
 			skip: skip, 
 			limit: page_size
 		}).sort('code_name').exec((err, page)=>{
@@ -96,7 +92,7 @@ module.exports.init = function(context, onFinished){
 		
 		if(name){
 			nextKey(code_name, (err)=>handleError(res, err), (code_name)=>{
-				Page.create({
+				db.Page.create({
 					name: name,
 					code_name: code_name
 				}, (err, page)=>{
@@ -121,7 +117,7 @@ module.exports.init = function(context, onFinished){
 			if(req.body == {}){
 				throw new Error("Must pass a body with put request.")
 			}
-			Page.findOne({
+			db.Page.findOne({
 				code_name: code_name 
 			}, (err, page)=>{
 				if(err) handleError(err)
@@ -144,12 +140,12 @@ module.exports.init = function(context, onFinished){
 			code_name = `page_${req.params.name}`
 			value = new RegExp(code_name, 'i')
 		}
-		Page.find({
+		db.Page.find({
 			code_name: value 
 		}, (err, page)=>{
 			if(err) handleError(res, err)
 			else 	handleData(res, page)
 		})
 	})
-	onFinished(router)
+	return router
 }

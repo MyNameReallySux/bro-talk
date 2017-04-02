@@ -1,15 +1,13 @@
-const router = require("express").Router()
 
 var count = 0;
 
-module.exports.config = {
+module.exports.context = {
 	name: "About",
-	title: "About Page"
+	title: "About Page",
+	route_url: "/arbitrary"
 }
 
-module.exports.init = function(context, onFinished){
-	var modules = context.modules || {}
-	
+module.exports.router = function(router, context, modules){	
 	router.get('/', (req, res, next)=>{
 		count++;
 		next();
@@ -19,12 +17,5 @@ module.exports.init = function(context, onFinished){
 			message: `Success ${count}`
 		});
 	})
-	onFinished(router)
-}
-
-module.exports = ()=>{
-	this.config = {}
-	this.init = ()=>{
-		
-	}
+	return router
 }

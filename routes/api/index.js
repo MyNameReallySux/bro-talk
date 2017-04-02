@@ -1,14 +1,14 @@
-const router = require("express").Router()
 const db = require("mongoose-simpledb").db
 
 var count = 0;
 
-module.exports.init = function(context, onFinished){
-	var modules = context.modules || {}
-	var Page = db.Page
+module.exports.options = {
+	passed_context: "route"
+}
 
-	router.get('/', modules.mcache(5), (req, res, next)=>{	 
+module.exports.router = function(router, context, imports){
+	router.get('/', imports.mcache(5), (req, res, next)=>{	 
 		res.send({ message: "/api route successful"});
 	})
-	onFinished(router)
+	return router
 }

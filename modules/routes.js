@@ -3,10 +3,9 @@ const path = require("path")
 const extend = require('extend')
 const router = require("express").Router()
 
+const Route = require("./route")
+
 const mcache = require(`${path.dirname(require.main.filename)}/modules/mcache`)
-
-const debug = []
-
 
 /**
  * Module itself accepts no parameters. Must run the {@link init init} function
@@ -23,7 +22,6 @@ module.exports = (()=>{
 	 */
 	this.init = ((app, package, options)=>{
 		this.app = app
-		this.router = router
 		this.package = package
 		this.options = options
 		_initialize(app, package)
@@ -62,10 +60,11 @@ module.exports = (()=>{
 	_initialize = ((app, package)=>{
 		this.onBeforeCreate()
 		this.context = _initAppContext(app, package)
+		this.imports = _initImports()
+		this.settings = _initSettings()
 		this.onCreate()
 		this.routes = _initDirectory(this.context.dirs.route)
 		this.onAfterCreate()	
-		console.dir(debug)
 	}).bind(this),
 		
 	/**
@@ -93,19 +92,24 @@ module.exports = (()=>{
 			dirs: {
 				route: app.get("routes") || "routes",
 				root: path.dirname(require.main.filename),
-			},
-			modules: {
-				mcache: mcache
-			},
-			settings: {
-				cache_duration: 5,
-				mcache_duration: 5,
-			},
-			use_db: true
+			}
 		}
 	
 		var context = extend(options, _defaultAppContext)
 		return context
+	}).bind(this)
+	
+	_initImports = (()=>{
+		return {
+			mcache: mcache
+		}
+	}).bind(this)
+	
+	_initSettings = (()=>{
+		return {
+			cache_duration: 5,
+			mcache_duration: 5,
+		}
 	}).bind(this)
 	
 	/**
@@ -116,62 +120,18 @@ module.exports = (()=>{
  	 * @param	{String} directory  | Absolute directory path.
 	 */
 	_initDirectory = ((directory)=>{		
-		var app = this.app
-		var appContext = this.context
-		var files = fs.readdirSync(directory)
+		const files = fs.readdirSync(directory)
 		files.forEach((file)=>{
-			var context = _initRouteContext(directory, file)
-			var stats = fs.statSync(context.file_path)
+			const file_path = `${directory}/${file}`
+			const file_name = path.basename(file_path, "js")
+			var stats = fs.statSync(file_path)
 			if(stats.isDirectory()){
-				_initDirectory(context.file_path)
+				_initDirectory(file_path)
 			} else {
-				Route = require("./route")
-				var route = Route.create(require(context.file_path).file_path, context, {})
-				debug.push(route)
-				/* var parentRoute = _getParentRoute(context.directory, context.file_path)
-				route.init(context, route.config, (route)=>{
-					app.use(parentRoute, route)
-				}) 
-				*/
+				let route = new Route(file_path, this.context, this.imports)
+				this.app.use(route.context.route_url, route.route)
 			}
 		})
-	}).bind(this)
-	
-	_initRouteContext = ((directory, file)=>{
-		var filePath = `${directory}\\${file}`
-		var routeName = _getRouteName(filePath)
-		
-		var _defaultRouteContext = {
-			title 		: this.context.name + " | " + routeName,
-			directory	: directory,
-			file_path	: filePath,
-			file_name	: file,
-			route_name	: routeName,
-		}
-		var appContext = this.context || {}
-		var routeContext = Object.assign({}, appContext, _defaultRouteContext)
-		return routeContext
-	}).bind(this)
-	
-	_getRouteName = ((filePath)=>{
-		var name = path.basename(filePath, ".js");
-		name = name.toString()
-		name = name.capitalize()
-		return name
-	}).bind(this)
-	
-	_getParentRoute = ((root, filePath)=>{
-		var name = path.basename(filePath, ".js");
-		if(name == "index"){
-			dir = path.dirname(filePath);
-			route = `${dir.split("routes")[1]}`;
-		} else {
-			dir = path.dirname(filePath);
-			route = `${dir.split("routes")[1]}/${name}`;
-		}
-		if(route == "") route = "/";
-
-		return `${route}`
 	}).bind(this)
 	
 	return this
