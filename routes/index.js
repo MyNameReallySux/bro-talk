@@ -4,10 +4,11 @@ var count = 0;
 module.exports.context = {
 	name: "About",
 	title: "About Page",
+	description: "This is the about page",
 	route_url: "/arbitrary"
 }
 
-module.exports.router = function(router, context, modules){	
+module.exports.router = function(router, context, imports){	
 	router.get('/', (req, res, next)=>{
 		count++;
 		next();

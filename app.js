@@ -13,15 +13,15 @@ const logger = 			require('morgan');
 const Page = 			require("./models/page")
 
 const utils = 			require("./modules/utils")
-const simpleRoute =		require("./modules/routes")
+const DirectoryRouter = require("./modules/routes")
 
-var app = express()
-var conx = 'mongodb://localhost/bro-talk'
+const app = express()
+const conx = 'mongodb://localhost/bro-talk'
 
 mongoose.connect(conx)
 mongoose.Promise = global.Promise
 
-var simpledb = require('mongoose-simpledb');
+const simpledb = require('mongoose-simpledb');
 
 app.set('port', process.env.PORT || 4000)
 app.set('views', path.join(__dirname, 'views'))
@@ -47,7 +47,8 @@ simpledb.init({
 	app.get("/", (err, res, req, next)=>{
 		res.set('Cache-Control', `max-age=${5}`)
 	})
-	simpleRoute.init(app, package, {})
+	const dr = new DirectoryRouter()
+	dr.init(app, package)
 });
 
 app.listen(app.get('port'), ()=>{
